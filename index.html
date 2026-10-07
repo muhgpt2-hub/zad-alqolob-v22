@@ -867,6 +867,9 @@ html[data-theme="light"] .ramadan-card h4{color:var(--gold-3)}
   .surah-grid{grid-template-columns:1fr}
 }
 </style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -1336,6 +1339,23 @@ html[data-theme="light"] .ramadan-card h4{color:var(--gold-3)}
 </footer>
 
 <script>
+  /* ============ Firebase Setup ============ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAGGIYCotazh7nKTFjPX1FsbPRkk8sZcuE",
+  authDomain: "zad-alqolob.firebaseapp.com",
+  databaseURL: "https://zad-alqolob-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "zad-alqolob",
+  storageBucket: "zad-alqolob.firebasestorage.app",
+  messagingSenderId: "615165979787",
+  appId: "1:615165979787:web:28591705a8e91348a3f88e"
+};
+let db = null;
+try{
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+}catch(e){
+  console.warn('Firebase init failed:', e);
+}
 /* =========================================================
    زاد القلوب — v3
    ========================================================= */
@@ -2634,6 +2654,19 @@ function finishQuiz(){
   };
   LS.set('zq_progress', state.progress);
   state.scores.push({name:state.player||'مشارك',level:lvl.title,pct,pts:quiz.score,date:new Date().toLocaleDateString('ar-EG')});
+    /* حفظ في Firebase (لوحة الصدارة الحقيقية) */
+  if(db){
+    try{
+      db.ref('leaderboard').push({
+        name: state.player || 'مشارك',
+        level: lvl.title,
+        pct: pct,
+        pts: quiz.score,
+        date: new Date().toLocaleDateString('ar-EG'),
+        timestamp: Date.now()
+      });
+    }catch(e){ console.warn('Firebase save failed:', e); }
+  }
   state.scores.sort((a,b)=> b.pct-a.pct || b.pts-a.pts);
   state.scores = state.scores.slice(0,50);
   LS.set('zq_scores', state.scores);
@@ -2706,15 +2739,43 @@ $('#shareCert').onclick = async ()=>{
 };
 function renderBoard(){
   const list = $('#boardList');
-  const s = state.scores;
-  if(!s.length){ list.innerHTML = '<div class="empty">لا توجد نتائج بعد 🌱</div>'; return; }
-  list.innerHTML = s.slice(0,20).map((r,i)=>`
-    <div class="b-row ${i<3?'g'+(i+1):''}">
-      <div class="rank">${i<3?['🥇','🥈','🥉'][i]:toAr(i+1)}</div>
-      <div class="nm">${r.name}<div class="dt">${r.level} · ${r.date}</div></div>
-      <div class="sc">${toAr(r.pct)}%</div>
-    </div>
-  `).join('');
+  if(!list) return;
+
+  // نعرض المحلي فوراً (عشان السرعة)
+  const localScores = state.scores || [];
+  if(localScores.length){
+    list.innerHTML = localScores.slice(0,20).map((r,i)=>`
+      <div class="b-row ${i<3?'g'+(i+1):''}">
+        <div class="rank">${i<3?['🥇','🥈','🥉'][i]:toAr(i+1)}</div>
+        <div class="nm">${r.name}<div class="dt">${r.level} · ${r.date}</div></div>
+        <div class="sc">${toAr(r.pct)}%</div>
+      </div>
+    `).join('');
+  } else {
+    list.innerHTML = '<div class="empty">لا توجد نتائج بعد 🌱</div>';
+  }
+
+  // نجيب من Firebase (لوحة الصدارة الحقيقية)
+  if(!db) return;
+  try{
+    db.ref('leaderboard').orderByChild('pct').limitToLast(20).once('value', snapshot=>{
+      const data = snapshot.val();
+      if(!data) return;
+      const scores = Object.values(data).sort((a,b)=> b.pct - a.pct || b.pts - a.pts);
+      if(!scores.length) return;
+
+      list.innerHTML = scores.map((r,i)=>{
+        const isMe = state.player && r.name === state.player;
+        return `
+          <div class="b-row ${i<3?'g'+(i+1):''}" style="${isMe ? 'border-color:var(--gold);background:rgba(212,175,55,.1);' : ''}">
+            <div class="rank">${i<3?['🥇','🥈','🥉'][i]:toAr(i+1)}</div>
+            <div class="nm">${r.name}${isMe ? ' <span style="color:var(--gold-2);font-size:11px">(أنت)</span>' : ''}<div class="dt">${r.level} · ${r.date}</div></div>
+            <div class="sc">${toAr(r.pct)}%</div>
+          </div>
+        `;
+      }).join('');
+    }, err => console.warn('Firebase read failed:', err));
+  }catch(e){ console.warn('Firebase error:', e); }
 }
 $('#clearBoard').onclick = ()=>{
   if(confirm('مسح كل النتائج؟')){
