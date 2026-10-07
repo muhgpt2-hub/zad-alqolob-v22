@@ -697,6 +697,175 @@ html[data-theme="light"] .azkar-toolbar .at-info b{color:var(--gold-3)}
   .azkar-toolbar .at-info{font-size:11.5px}
   .azkar-card .az-reset{width:30px;height:30px;font-size:12px}
 }
+/* ============================================================
+   الدفعة الثانية — القرآن الكريم · رمضان المتقدم
+   ============================================================ */
+
+/* ===== القرآن الكريم ===== */
+.quran-toolbar{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:16px;padding:12px 16px;border-radius:14px;
+  background:rgba(0,0,0,.25);border:1px solid var(--card-brd);flex-wrap:wrap;
+}
+html[data-theme="light"] .quran-toolbar{background:rgba(255,255,255,.7)}
+.quran-toolbar .qt-info{font-size:12.5px;color:var(--muted);font-weight:700}
+.quran-toolbar .qt-info b{color:var(--gold-2);font-family:'Reem Kufi';font-size:16px}
+.quran-search{
+  width:100%;padding:12px 16px;border-radius:12px;
+  background:rgba(0,0,0,.35);border:1.5px solid rgba(212,175,55,.3);
+  color:var(--txt);font-family:'Cairo';font-size:14px;font-weight:600;
+  outline:none;margin-bottom:16px;
+}
+html[data-theme="light"] .quran-search{background:rgba(255,255,255,.85)}
+.quran-search:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,175,55,.14)}
+
+.surah-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:10px;
+}
+.surah-card{
+  padding:14px 12px;border-radius:14px;cursor:pointer;
+  background:linear-gradient(150deg,rgba(255,255,255,.05),rgba(0,0,0,.25));
+  border:1px solid var(--card-brd);transition:.3s;
+  display:flex;align-items:center;gap:10px;
+}
+html[data-theme="light"] .surah-card{background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(245,241,232,.85))}
+.surah-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 12px 25px -8px var(--gold)}
+.surah-card .sc-num{
+  width:36px;height:36px;flex:0 0 36px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(212,175,55,.25),rgba(212,175,55,.1));
+  border:1px solid rgba(212,175,55,.4);
+  display:grid;place-items:center;font-family:'Reem Kufi';
+  font-size:14px;color:var(--gold-2);font-weight:700;
+}
+.surah-card .sc-info{flex:1;min-width:0}
+.surah-card .sc-name{font-family:'Reem Kufi';font-size:15px;color:var(--txt);font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.surah-card .sc-meta{font-size:10.5px;color:var(--muted);font-weight:700}
+
+.surah-reader{
+  position:fixed;inset:0;z-index:68;background:rgba(0,0,0,.85);
+  backdrop-filter:blur(10px);display:none;padding:20px;overflow-y:auto;
+}
+.surah-reader.show{display:block}
+.surah-reader-box{
+  max-width:820px;margin:30px auto;padding:30px 26px;border-radius:22px;
+  background:linear-gradient(150deg,#0b4a38,#04120e);
+  border:1px solid var(--card-brd);box-shadow:var(--shadow);position:relative;
+}
+html[data-theme="light"] .surah-reader-box{background:linear-gradient(150deg,#fff,#f5f1e8)}
+.surah-reader .sr-close{
+  position:absolute;top:14px;inset-inline-start:14px;
+  width:40px;height:40px;border-radius:12px;
+  background:rgba(0,0,0,.4);border:1px solid var(--card-brd);
+  color:var(--gold-2);font-size:18px;cursor:pointer;display:grid;place-items:center;z-index:2;
+}
+.surah-reader h2{
+  font-family:'Reem Kufi';font-size:26px;color:var(--gold-2);
+  text-align:center;margin-bottom:6px;padding-top:10px;
+}
+.surah-reader .sr-sub{
+  text-align:center;color:var(--muted);font-size:13px;
+  font-weight:700;margin-bottom:20px;
+}
+.surah-reader .sr-audio{
+  display:flex;justify-content:center;margin-bottom:20px;
+}
+.surah-reader .sr-audio audio{width:100%;max-width:420px;height:38px}
+.surah-reader .sr-bismillah{
+  text-align:center;font-family:'Amiri',serif;font-size:22px;
+  color:var(--gold-2);margin:20px 0 26px;font-weight:700;
+}
+.surah-reader .sr-text{
+  font-family:'Amiri',serif;font-size:24px;line-height:2.4;
+  color:var(--txt);text-align:center;direction:rtl;
+  font-weight:500;
+}
+.surah-reader .sr-ayah{
+  display:inline;
+  padding:4px 6px;border-radius:6px;transition:.3s;cursor:pointer;
+}
+.surah-reader .sr-ayah:hover{background:rgba(212,175,55,.15)}
+.surah-reader .sr-ayah .sr-num{
+  display:inline-block;font-family:'Cairo';font-size:12px;
+  color:var(--gold-2);font-weight:800;
+  background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.35);
+  border-radius:50%;width:26px;height:26px;line-height:24px;
+  text-align:center;margin:0 4px;vertical-align:middle;
+}
+.surah-reader .sr-nav{
+  display:flex;justify-content:space-between;gap:10px;margin-top:24px;
+  padding-top:20px;border-top:1px solid rgba(212,175,55,.2);
+}
+
+/* ===== رمضان المتقدم ===== */
+.ramadan-countdown{
+  text-align:center;padding:30px 20px;border-radius:24px;
+  background:linear-gradient(150deg,rgba(139,92,246,.25),rgba(251,191,36,.15));
+  border:1.5px solid var(--card-brd);margin-bottom:22px;position:relative;overflow:hidden;
+}
+html[data-theme="light"] .ramadan-countdown{background:linear-gradient(150deg,rgba(139,92,246,.15),rgba(251,191,36,.1))}
+.ramadan-countdown::before{
+  content:"";position:absolute;inset:-50%;
+  background:radial-gradient(circle,rgba(251,191,36,.15),transparent 60%);
+  animation:pulseSoft 3s infinite;pointer-events:none;
+}
+.ramadan-countdown>*{position:relative;z-index:1}
+.ramadan-countdown .rc-icon{font-size:56px;margin-bottom:10px}
+.ramadan-countdown .rc-title{font-family:'Reem Kufi';font-size:22px;color:var(--gold-2);margin-bottom:6px}
+html[data-theme="light"] .ramadan-countdown .rc-title{color:var(--gold-3)}
+.ramadan-countdown .rc-sub{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:20px}
+.ramadan-countdown .rc-clock{
+  display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+}
+.ramadan-countdown .rc-unit{
+  background:rgba(0,0,0,.35);border:1px solid rgba(212,175,55,.3);
+  border-radius:14px;padding:12px 16px;min-width:70px;
+}
+html[data-theme="light"] .ramadan-countdown .rc-unit{background:rgba(255,255,255,.7)}
+.ramadan-countdown .rc-unit b{
+  display:block;font-family:'Reem Kufi';font-size:26px;
+  color:var(--gold-2);line-height:1;margin-bottom:4px;
+}
+html[data-theme="light"] .ramadan-countdown .rc-unit b{color:var(--gold-3)}
+.ramadan-countdown .rc-unit span{font-size:10.5px;color:var(--muted);font-weight:700}
+
+.ramadan-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.ramadan-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;
+}
+.ramadan-card{
+  padding:20px 18px;border-radius:18px;
+  background:linear-gradient(150deg,rgba(255,255,255,.06),rgba(0,0,0,.25));
+  border:1px solid var(--card-brd);transition:.3s;
+}
+html[data-theme="light"] .ramadan-card{background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(245,241,232,.85))}
+.ramadan-card:hover{transform:translateY(-4px);border-color:var(--gold)}
+.ramadan-card .rm-ico{font-size:32px;margin-bottom:10px}
+.ramadan-card h4{font-family:'Reem Kufi';font-size:16px;color:var(--gold-2);margin-bottom:8px}
+html[data-theme="light"] .ramadan-card h4{color:var(--gold-3)}
+.ramadan-card p{font-size:13px;color:var(--txt);line-height:1.9;font-weight:600}
+
+@media(max-width:820px){
+  .surah-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .surah-card{padding:12px 10px}
+  .surah-card .sc-num{width:30px;height:30px;flex:0 0 30px;font-size:12px}
+  .surah-card .sc-name{font-size:13px}
+  .surah-card .sc-meta{font-size:9.5px}
+  .surah-reader{padding:10px}
+  .surah-reader-box{padding:22px 16px;margin:15px auto;border-radius:18px}
+  .surah-reader h2{font-size:20px}
+  .surah-reader .sr-text{font-size:20px;line-height:2.2}
+  .surah-reader .sr-ayah .sr-num{width:22px;height:22px;line-height:20px;font-size:10px}
+  .ramadan-countdown{padding:22px 14px}
+  .ramadan-countdown .rc-icon{font-size:44px}
+  .ramadan-countdown .rc-title{font-size:18px}
+  .ramadan-countdown .rc-unit{padding:10px 12px;min-width:60px}
+  .ramadan-countdown .rc-unit b{font-size:22px}
+  .ramadan-grid{grid-template-columns:1fr}
+}
+@media(max-width:380px){
+  .surah-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -714,7 +883,6 @@ html[data-theme="light"] .azkar-toolbar .at-info b{color:var(--gold-3)}
     </div>
     <div class="tools">
       <button class="icon-btn" id="searchBtn" title="بحث">🔍</button>
-      <button class="icon-btn" id="nasheedBtn" title="الأناشيد">🎵</button>
       <button class="icon-btn" id="tasbihBtn" title="السبحة">📿</button>
       <button class="icon-btn" id="dashBtn" title="لوحتي">📊</button>
       <button class="icon-btn" id="settingsBtn" title="الإعدادات">⚙️</button>
@@ -732,6 +900,8 @@ html[data-theme="light"] .azkar-toolbar .at-info b{color:var(--gold-3)}
   <button class="nav-btn" data-go="favorites">🔖 المفضلة <span id="favCount" style="font-size:11px;opacity:.8"></span></button>
   <button class="nav-btn" data-go="azkar">📿 الأذكار</button>
   <button class="nav-btn" data-go="names">🕋 الأسماء الحسنى</button>
+  <button class="nav-btn" data-go="quran">📖 القرآن</button>
+  <button class="nav-btn" data-go="ramadan">🌙 رمضان</button>
 </nav>
 <div class="nav-overlay" id="navOverlay"></div>
 
@@ -909,6 +1079,29 @@ html[data-theme="light"] .azkar-toolbar .at-info b{color:var(--gold-3)}
       </div>
     </div>
   </section>
+    <!-- ===== قسم القرآن الكريم ===== -->
+  <section class="screen" id="screen-quran">
+    <div class="sec-title">📖 القرآن الكريم <small>١١٤ سورة مع التلاوة والتفسير</small></div>
+    <div class="quran-toolbar">
+      <div class="qt-info">📚 إجمالي السور: <b id="quranTotal">١١٤</b></div>
+      <div class="qt-info">⏱ آخر قراءة: <b id="quranLastRead">—</b></div>
+    </div>
+    <input class="quran-search" id="quranSearch" placeholder="🔍 ابحث عن سورة بالاسم أو الرقم…" autocomplete="off">
+    <div class="surah-grid" id="surahGrid"></div>
+  </section>
+
+  <!-- ===== قسم رمضان ===== -->
+  <section class="screen" id="screen-ramadan">
+    <div class="sec-title">🌙 رمضان المتقدم <small>عدّاد · أذكار · فضائل</small></div>
+    <div class="ramadan-countdown" id="ramadanCountdown">
+      <div class="rc-icon">🌙</div>
+      <div class="rc-title" id="ramadanTitle">جاري التحميل…</div>
+      <div class="rc-sub" id="ramadanSub">—</div>
+      <div class="rc-clock" id="ramadanClock"></div>
+    </div>
+    <div class="ramadan-tabs" id="ramadanTabs"></div>
+    <div class="ramadan-grid" id="ramadanGrid"></div>
+  </section>
   <!-- ===== قسم الأذكار ===== -->
   <section class="screen" id="screen-azkar">
     <div class="sec-title">📿 الأذكار <small>أذكار الصباح والمساء والنوم</small></div>
@@ -960,7 +1153,21 @@ html[data-theme="light"] .azkar-toolbar .at-info b{color:var(--gold-3)}
   </section>
 
 </div>
-
+<!-- قارئ السورة -->
+<div class="surah-reader" id="surahReader">
+  <div class="surah-reader-box">
+    <button class="sr-close" onclick="closeSurahReader()">✕</button>
+    <h2 id="srTitle">—</h2>
+    <div class="sr-sub" id="srSub">—</div>
+    <div class="sr-audio" id="srAudioBox"></div>
+    <div class="sr-bismillah" id="srBismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+    <div class="sr-text" id="srText">جاري التحميل…</div>
+    <div class="sr-nav">
+      <button class="btn btn-sm btn-ghost" id="srPrev">← السورة السابقة</button>
+      <button class="btn btn-sm btn-ghost" id="srNext">السورة التالية →</button>
+    </div>
+  </div>
+</div>
 <!-- قارئ -->
 <div class="reader-modal" id="readerModal">
   <div class="reader-box">
@@ -1967,6 +2174,8 @@ function go(id){
   if(id === 'prayer') loadPrayerTimes();
   if(id === 'board') renderBoard();
   if(id === 'dashboard') renderDashboard();
+  if(id === 'ramadan') updateRamadanCountdown();
+  if(id === 'quran' && !surahListCache) renderSurahGrid();
 }
 function closeMenu(){
   $('#navMain').classList.remove('open');
@@ -2620,11 +2829,14 @@ function nextNasheed(){
   else loadNasheed(state.nasheedState.current+1);
   playNasheed();
 }
-$('#nasheedBtn').onclick = ()=>{
-  sndClick();
-  $('#nasheedPlayer').classList.toggle('show');
-  if(!audio.src) loadNasheed(state.nasheedState.current);
-};
+const nasheedBtnEl = $('#nasheedBtn');
+if(nasheedBtnEl){
+  nasheedBtnEl.onclick = ()=>{
+    sndClick();
+    $('#nasheedPlayer').classList.toggle('show');
+    if(!audio.src) loadNasheed(state.nasheedState.current);
+  };
+}
 $('#npClose').onclick = ()=>{ sndClick(); $('#nasheedPlayer').classList.remove('show'); pauseNasheed(); };
 $('#npPlay').onclick = ()=>{ sndClick(); state.nasheedState.playing ? pauseNasheed() : playNasheed(); };
 $('#npNext').onclick = ()=>{ sndClick(); nextNasheed(); };
@@ -3513,6 +3725,292 @@ function showCertVerifyModal(name, lvl, pct, date){
     }
   }catch(e){}
 })();
+/* ============================================================
+   الدفعة الثانية — القرآن الكريم · رمضان المتقدم
+   ============================================================ */
+
+/* ============ 1. القرآن الكريم ============ */
+const QURAN_API = 'https://api.alquran.cloud/v1';
+const QURAN_CDN = 'https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy';
+let surahListCache = null;
+let currentSurahNum = 1;
+
+async function loadSurahList(){
+  if(surahListCache) return surahListCache;
+  try{
+    const r = await fetch(QURAN_API + '/surah');
+    const j = await r.json();
+    surahListCache = j.data;
+    return surahListCache;
+  }catch(e){
+    console.error(e);
+    return null;
+  }
+}
+
+async function renderSurahGrid(){
+  const grid = $('#surahGrid'); if(!grid) return;
+  grid.innerHTML = '<div class="empty" style="grid-column:1/-1">جاري التحميل…</div>';
+  const list = await loadSurahList();
+  if(!list){
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">⚠️ تعذّر تحميل السور، حاول مرة أخرى</div>';
+    return;
+  }
+  const total = $('#quranTotal');
+  if(total) total.textContent = toAr(list.length);
+
+  function paint(items){
+    grid.innerHTML = items.map(s=>`
+      <div class="surah-card" data-num="${s.number}">
+        <div class="sc-num">${toAr(s.number)}</div>
+        <div class="sc-info">
+          <div class="sc-name">${s.name}</div>
+          <div class="sc-meta">${s.numberOfAyahs} آية · ${s.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}</div>
+        </div>
+      </div>
+    `).join('');
+    grid.querySelectorAll('.surah-card').forEach(el=>{
+      el.onclick = ()=> openSurahReader(+el.dataset.num);
+    });
+  }
+  paint(list);
+
+  // البحث
+  const search = $('#quranSearch');
+  if(search && !search._bound){
+    search._bound = true;
+    search.oninput = ()=>{
+      const q = search.value.trim().toLowerCase();
+      if(!q){ paint(list); return; }
+      const filtered = list.filter(s=>
+        s.name.toLowerCase().includes(q) ||
+        String(s.number) === q ||
+        s.englishName.toLowerCase().includes(q)
+      );
+      if(!filtered.length){
+        grid.innerHTML = '<div class="empty" style="grid-column:1/-1">لا توجد نتائج 🔍</div>';
+        return;
+      }
+      paint(filtered);
+    };
+  }
+
+  // آخر قراءة
+  const lastRead = LS.get('zq_last_surah', null);
+  const lastEl = $('#quranLastRead');
+  if(lastEl && lastRead){
+    const s = list.find(x=>x.number === lastRead);
+    if(s) lastEl.textContent = s.name;
+  }
+}
+
+async function openSurahReader(num){
+  if(num < 1) num = 1;
+  if(num > 114) num = 114;
+  currentSurahNum = num;
+  const reader = $('#surahReader'); if(!reader) return;
+  reader.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  $('#srTitle').textContent = 'جاري التحميل…';
+  $('#srSub').textContent = '';
+  $('#srText').textContent = 'جاري التحميل…';
+  $('#srAudioBox').innerHTML = '';
+
+  // حفظ آخر قراءة
+  LS.set('zq_last_surah', num);
+  const lastEl = $('#quranLastRead');
+  if(lastEl && surahListCache){
+    const s = surahListCache.find(x=>x.number === num);
+    if(s) lastEl.textContent = s.name;
+  }
+
+  try{
+    // معلومات السورة
+    const list = await loadSurahList();
+    const info = list ? list.find(s=>s.number === num) : null;
+    if(info){
+      $('#srTitle').textContent = 'سورة ' + info.name.replace('سُورَةُ ', '');
+      $('#srSub').textContent = info.numberOfAyahs + ' آية · ' + (info.revelationType === 'Meccan' ? 'مكية' : 'مدنية');
+    } else {
+      $('#srTitle').textContent = 'سورة رقم ' + toAr(num);
+    }
+
+    // نص السورة
+    const r = await fetch(QURAN_API + '/surah/' + num);
+    const j = await r.json();
+    const ayahs = j.data.ayahs;
+
+    // هل السورة تبدأ بالبسملة؟ (كل السور ما عدا التوبة)
+    const showBismillah = num !== 9 && num !== 1;
+    $('#srBismillah').style.display = showBismillah ? 'block' : 'none';
+
+    // لو الفاتحة، الآية الأولى هي البسملة نفسها
+    let textHtml = '';
+    ayahs.forEach(a=>{
+      const clean = a.text.replace(/^بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\s*/, '');
+      const isBismillahOnly = num === 1 && a.numberInSurah === 1;
+      const display = isBismillahOnly ? a.text : clean;
+      textHtml += `<span class="sr-ayah">${display} <span class="sr-num">${toAr(a.numberInSurah)}</span></span> `;
+    });
+    $('#srText').innerHTML = textHtml;
+
+        // الصوت — بدون أصفار (الـ CDN مش بيقبل padStart)
+    const audioUrl = `${QURAN_CDN}/${num}.mp3`;
+    $('#srAudioBox').innerHTML = `<audio controls preload="none"><source src="${audioUrl}" type="audio/mpeg">متصفحك لا يدعم الصوت</audio>`;
+
+  }catch(e){
+    console.error(e);
+    $('#srText').textContent = '⚠️ تعذّر تحميل السورة، تحقق من الإنترنت';
+  }
+}
+
+function closeSurahReader(){
+  const reader = $('#surahReader'); if(!reader) return;
+  reader.classList.remove('show');
+  document.body.style.overflow = '';
+  // إيقاف الصوت
+  const audio = reader.querySelector('audio');
+  if(audio) audio.pause();
+}
+
+$('#srPrev').onclick = ()=>{ sndClick(); openSurahReader(currentSurahNum - 1); };
+$('#srNext').onclick = ()=>{ sndClick(); openSurahReader(currentSurahNum + 1); };
+$('#surahReader').onclick = e => { if(e.target.id === 'surahReader') closeSurahReader(); };
+
+window.closeSurahReader = closeSurahReader;
+
+/* ============ 2. رمضان المتقدم ============ */
+const RAMADAN_DATA = {
+  virtues: [
+    { ico:'🌙', title:'شهر القرآن', text:'قال تعالى: «شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ هُدًى لِّلنَّاسِ» — البقرة ١٨٥.' },
+    { ico:'🚪', title:'فتح أبواب الجنة', text:'قال ﷺ: «إذا جاء رمضان فُتحت أبواب الجنة، وغُلّقت أبواب النار، وصُفّدت الشياطين». (متفق عليه)' },
+    { ico:'🌺', title:'الصوم جُنّة', text:'قال ﷺ: «الصيام جُنّة، فإذا كان أحدكم صائمًا فلا يرفث ولا يجهل». (متفق عليه)' },
+    { ico:'✨', title:'ليلة القدر', text:'«لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ» — القدر ٣. وهي في العشر الأواخر من رمضان.' },
+    { ico:'🤲', title:'الدعاء مستجاب', text:'قال ﷺ: «ثلاثة لا تُردّ دعوتهم: الصائم حتى يُفطر، والإمام العادل، والمظلوم». (الترمذي)' },
+    { ico:'📖', title:'ختم القرآن', text:'كان جبريل يدارس النبي ﷺ القرآن في رمضان. يُستحب الإكثار من التلاوة في الشهر.' },
+    { ico:'🕌', title:'قيام الليل', text:'قال ﷺ: «من قام رمضان إيمانًا واحتسابًا غُفر له ما تقدم من ذنبه». (متفق عليه)' },
+    { ico:'🍽️', title:'السحور', text:'قال ﷺ: «تسحّروا فإن في السحور بركة». (متفق عليه)' }
+  ],
+  adhkar: [
+    { title:'دعاء الإفطار', text:'ذَهَبَ الظَّمَأُ، وَابْتَلَّتِ الْعُرُوقُ، وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ.' },
+    { title:'دعاء الصائم عند الإفطار', text:'اللَّهُمَّ لَكَ صُمْتُ، وَعَلَىٰ رِزْقِكَ أَفْطَرْتُ.' },
+    { title:'دعاء ليلة القدر', text:'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي.' },
+    { title:'دعاء السحور', text:'اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا، وَقِنَا عَذَابَ النَّارِ.' },
+    { title:'دعاء بداية الشهر', text:'اللَّهُمَّ سَلِّمْنِي لِرَمَضَانَ، وَسَلِّمْ رَمَضَانَ لِي، وَتَسَلَّمْهُ مِنِّي مُتَقَبَّلًا.' }
+  ]
+};
+
+let currentRamadanTab = 'virtues';
+
+function renderRamadanTabs(){
+  const tabs = $('#ramadanTabs'); if(!tabs) return;
+  const list = [
+    { id:'virtues', label:'🌟 فضائل الشهر' },
+    { id:'adhkar', label:'🤲 أدعية وأذكار' }
+  ];
+  tabs.innerHTML = list.map(t=>`
+    <button class="cat-btn ${t.id === currentRamadanTab ? 'active' : ''}" data-tab="${t.id}">${t.label}</button>
+  `).join('');
+  tabs.querySelectorAll('.cat-btn').forEach(b=>{
+    b.onclick = ()=>{ sndClick(); currentRamadanTab = b.dataset.tab; renderRamadanTabs(); renderRamadanContent(); };
+  });
+}
+
+function renderRamadanContent(){
+  const grid = $('#ramadanGrid'); if(!grid) return;
+  const items = currentRamadanTab === 'virtues' ? RAMADAN_DATA.virtues : RAMADAN_DATA.adhkar;
+  grid.innerHTML = items.map(it=>{
+    if(currentRamadanTab === 'virtues'){
+      return `<div class="ramadan-card">
+        <div class="rm-ico">${it.ico}</div>
+        <h4>${it.title}</h4>
+        <p>${it.text}</p>
+      </div>`;
+    } else {
+      return `<div class="ramadan-card">
+        <div class="rm-ico">🤲</div>
+        <h4>${it.title}</h4>
+        <p style="font-family:'Amiri',serif;font-size:16px;line-height:2">${it.text}</p>
+      </div>`;
+    }
+  }).join('');
+}
+
+function updateRamadanCountdown(){
+  const title = $('#ramadanTitle');
+  const sub = $('#ramadanSub');
+  const clock = $('#ramadanClock');
+  if(!title || !clock) return;
+
+  const now = new Date();
+
+  // نحتاج مواقيت الصلاة (من prayerData لو محملة)
+  let fajr = null, maghrib = null;
+  if(prayerData && prayerData.timings){
+    const [fh, fm] = prayerData.timings.Fajr.split(':').map(Number);
+    const [mh, mm] = prayerData.timings.Maghrib.split(':').map(Number);
+    fajr = new Date(now); fajr.setHours(fh, fm, 0, 0);
+    maghrib = new Date(now); maghrib.setHours(mh, mm, 0, 0);
+  } else {
+    // قيم افتراضية
+    fajr = new Date(now); fajr.setHours(4, 30, 0, 0);
+    maghrib = new Date(now); maghrib.setHours(18, 15, 0, 0);
+  }
+
+  // هل الآن وقت صيام؟ (بين الفجر والمغرب)
+  let target, targetName, icon;
+  if(now >= fajr && now < maghrib){
+    // نعد للإفطار
+    target = maghrib;
+    targetName = '🌅 الإفطار';
+    icon = '🍽️';
+  } else {
+    // نعد للسحور (الفجر القادم)
+    if(now >= maghrib){
+      fajr = new Date(fajr.getTime() + 24*60*60*1000);
+    }
+    target = fajr;
+    targetName = '🌙 السحور';
+    icon = '🍽️';
+  }
+
+  const diff = target - now;
+  if(diff <= 0){ title.textContent = 'حان الآن وقت ' + targetName.split(' ')[1]; return; }
+
+  const hours = Math.floor(diff / (1000*60*60));
+  const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const secs = Math.floor((diff % (1000*60)) / 1000);
+
+  title.textContent = icon + ' متبقي لـ ' + targetName;
+  sub.textContent = 'استعد للصلاة والدعاء 🤲';
+
+  clock.innerHTML = `
+    <div class="rc-unit"><b>${toAr(hours)}</b><span>ساعة</span></div>
+    <div class="rc-unit"><b>${toAr(mins)}</b><span>دقيقة</span></div>
+    <div class="rc-unit"><b>${toAr(secs)}</b><span>ثانية</span></div>
+  `;
+}
+
+setInterval(()=>{
+  if($('#screen-ramadan')?.classList.contains('active')) updateRamadanCountdown();
+}, 1000);
+
+/* ============ الإقلاع ============ */
+function initBatch2(){
+  renderSurahGrid();
+  renderRamadanTabs();
+  renderRamadanContent();
+  updateRamadanCountdown();
+
+  // تشغيل أزرار التنقل الجديدة
+  $$('.nav-btn').forEach(b=>{
+    if(b.dataset.go === 'quran' || b.dataset.go === 'ramadan'){
+      b.onclick = ()=>{ sndClick(); go(b.dataset.go); closeMenu(); };
+    }
+  });
+}
+
+setTimeout(initBatch2, 600);
 /* تشغيل الدفعة الجديدة */
 setTimeout(initBatch1, 500);
 })();
