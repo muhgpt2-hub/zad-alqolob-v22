@@ -4192,6 +4192,8 @@ const RECITERS = [
 
 /* القارئ المختار حالياً */
 let currentReciterId = LS.get('zq_reciter', 'ar.alafasy');
+let surahListCache = null;
+let currentSurahNum = 1;
 
 async function loadSurahList(){
   if(surahListCache) return surahListCache;
