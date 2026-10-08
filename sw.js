@@ -1,7 +1,7 @@
 /* ============================================================
    زاد القلوب — Service Worker
    ============================================================ */
-const CACHE_VERSION = 'zad-alqolob-v1.0.0';
+const CACHE_VERSION = 'zad-alqolob-v1.0.1';
 const CACHE_STATIC = CACHE_VERSION + '-static';
 const CACHE_DYNAMIC = CACHE_VERSION + '-dynamic';
 
@@ -76,7 +76,23 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  /* الملفات الثابتة — كاش أولاً */
+  /* HTML — Network First (عشان التحديثات) */
+  if(req.mode === 'navigate' || req.destination === 'document' || url.pathname.endsWith('/') || url.pathname.endsWith('index.html')){
+    event.respondWith(
+      fetch(req).then(res => {
+        if(res && res.status === 200){
+          const clone = res.clone();
+          caches.open(CACHE_DYNAMIC).then(c => c.put(req, clone));
+        }
+        return res;
+      }).catch(() => {
+        return caches.match(req).then(cached => cached || caches.match('./index.html'));
+      })
+    );
+    return;
+  }
+
+  /* باقي الملفات — كاش أولاً */
   event.respondWith(
     caches.match(req).then(cached => {
       if(cached) return cached;
@@ -86,11 +102,6 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_DYNAMIC).then(c => c.put(req, clone));
         }
         return res;
-      }).catch(() => {
-        /* لو فشل الجلب وفيه طلب HTML، رجّع index.html */
-        if(req.mode === 'navigate' || req.destination === 'document') {
-          return caches.match('./index.html');
-        }
       });
     })
   );
