@@ -941,10 +941,77 @@ html[data-theme="light"] .notif-title{color:var(--gold-3)}
   .notif-title{font-size:13.5px}
   .notif-body{font-size:12px}
 }
+/* ===== Admin Panel ===== */
+.admin-login-box{max-width:400px;text-align:center}
+.admin-login-box input{
+  width:100%;padding:14px 16px;border-radius:12px;
+  background:rgba(0,0,0,.35);border:1.5px solid rgba(212,175,55,.3);
+  color:var(--txt);font-family:'Cairo';font-size:15px;font-weight:700;
+  outline:none;text-align:center;margin-bottom:14px;
+}
+.admin-login-box input:focus{border-color:var(--gold)}
+.admin-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;justify-content:center}
+.admin-tabs .cat-btn{font-size:12.5px}
+.admin-content{display:grid;gap:14px}
+.admin-card{
+  padding:18px 16px;border-radius:16px;
+  background:linear-gradient(150deg,rgba(255,255,255,.06),rgba(0,0,0,.25));
+  border:1px solid var(--card-brd);
+}
+html[data-theme="light"] .admin-card{background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(245,241,232,.85))}
+.admin-card h4{font-family:'Reem Kufi';font-size:15px;color:var(--gold-2);margin-bottom:10px}
+html[data-theme="light"] .admin-card h4{color:var(--gold-3)}
+.admin-form{display:grid;gap:8px;margin-bottom:14px}
+.admin-form input,.admin-form textarea,.admin-form select{
+  width:100%;padding:11px 14px;border-radius:10px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(212,175,55,.25);
+  color:var(--txt);font-family:'Cairo';font-size:13px;font-weight:600;
+  outline:none;
+}
+.admin-form input:focus,.admin-form textarea:focus,.admin-form select:focus{
+  border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.14);
+}
+.admin-form textarea{min-height:70px;resize:vertical}
+.admin-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:12px 14px;border-radius:12px;background:rgba(0,0,0,.25);
+  border:1px solid rgba(255,255,255,.08);margin-bottom:8px;
+}
+.admin-item .ai-content{flex:1;min-width:0;font-size:13px;line-height:1.7}
+.admin-item .ai-title{font-weight:800;color:var(--gold-2);margin-bottom:4px}
+html[data-theme="light"] .admin-item .ai-title{color:var(--gold-3)}
+.admin-item .ai-meta{font-size:11px;color:var(--muted);font-weight:600;margin-top:4px}
+.admin-del{
+  background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);
+  color:#ef4444;width:34px;height:34px;border-radius:10px;
+  cursor:pointer;font-size:15px;display:grid;place-items:center;
+  transition:.25s;flex-shrink:0;
+}
+.admin-del:hover{background:rgba(239,68,68,.3);transform:scale(1.1)}
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:14px}
+.admin-stat{padding:14px 10px;border-radius:12px;text-align:center;background:rgba(0,0,0,.25);border:1px solid var(--card-brd)}
+.admin-stat b{display:block;font-family:'Reem Kufi';font-size:22px;color:var(--gold-2);margin-bottom:4px}
+html[data-theme="light"] .admin-stat b{color:var(--gold-3)}
+.admin-stat span{font-size:11px;color:var(--muted);font-weight:700}
+.admin-logout{
+  position:fixed;top:80px;inset-inline-start:16px;z-index:60;
+  padding:8px 14px;border-radius:10px;
+  background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);
+  color:#ef4444;font-family:'Cairo';font-weight:800;font-size:12px;
+  cursor:pointer;transition:.25s;
+}
+.admin-logout:hover{background:rgba(239,68,68,.3)}
 </style>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0d5c46">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="زاد القلوب">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%230d5c46'/%3E%3Ctext x='96' y='130' font-size='110' text-anchor='middle'%3E%F0%9F%95%8C%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -1208,7 +1275,25 @@ html[data-theme="light"] .notif-title{color:var(--gold-3)}
       <button class="btn btn-ghost" id="clearBoard">🗑️ مسح اللوحة</button>
     </div>
   </section>
-
+  <!-- ===== Admin Panel ===== -->
+  <section class="screen" id="screen-admin">
+    <div class="sec-title">🔐 لوحة التحكم <small>للمشرف فقط</small></div>
+    <div id="adminLogin">
+      <div class="modal-box admin-login-box" style="margin:0 auto">
+        <div style="font-size:44px;margin-bottom:8px">🔐</div>
+        <h3>دخول المشرف</h3>
+        <p>أدخل كلمة السر للوصول للوحة التحكم</p>
+        <input type="password" id="adminPassInput" placeholder="كلمة السر…" autocomplete="off">
+        <button class="btn btn-gold" id="adminLoginBtn" style="width:100%">دخول</button>
+      </div>
+    </div>
+    <div id="adminPanel" style="display:none">
+      <button class="admin-logout" onclick="adminLogout()">🚪 خروج</button>
+      <div class="admin-stats" id="adminStats"></div>
+      <div class="admin-tabs" id="adminTabs"></div>
+      <div class="admin-content" id="adminContent"></div>
+    </div>
+  </section>
   <!-- لوحة التحكم (جوه الـ wrap) -->
   <section class="screen" id="screen-dashboard">
     <div class="sec-title">📊 لوحتي <small>إحصائياتك وإنجازاتك</small></div>
@@ -1408,6 +1493,11 @@ html[data-theme="light"] .notif-title{color:var(--gold-3)}
         <button class="btn btn-sm btn-ghost" id="setNotifTest">تجربة</button>
       </div>
       <p style="font-size:11.5px;color:var(--muted);font-weight:600;margin-top:8px" id="notifStatus">غير مفعّلة</p>
+    </div>
+        <div class="set-section" id="installPWASection" style="display:none">
+      <h4>📱 تثبيت التطبيق</h4>
+      <button class="btn btn-sm btn-gold" id="installPWABtn" style="width:100%">📲 تثبيت زاد القلوب على جهازك</button>
+      <p style="font-size:11.5px;color:var(--muted);font-weight:600;margin-top:8px;text-align:center">يشتغل بدون إنترنت · أسرع · تجربة أفضل</p>
     </div>
     <div class="set-section">
       <h4>📖 قارئ القصص</h4>
@@ -4294,6 +4384,327 @@ setTimeout(loadNotifications, 1500);
 setInterval(loadNotifications, 5 * 60 * 1000);
 /* تشغيل الدفعة الجديدة */
 setTimeout(initBatch1, 500);
+/* ============================================================
+   PWA — Service Worker + Install
+   ============================================================ */
+let deferredInstallPrompt = null;
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').then(reg=>{
+      console.log('✅ SW registered:', reg.scope);
+    }).catch(err=>{
+      console.warn('❌ SW register failed:', err);
+    });
+  });
+}
+
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const sec = $('#installPWASection');
+  if(sec) sec.style.display = 'block';
+});
+
+$('#installPWABtn') && ($('#installPWABtn').onclick = async ()=>{
+  if(!deferredInstallPrompt){
+    toast('📱 لو مش ظاهر عندك زرار التثبيت، استخدم قائمة المتصفح → "إضافة إلى الشاشة الرئيسية"');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  if(outcome === 'accepted'){
+    toast('🎉 تم تثبيت التطبيق بنجاح');
+    $('#installPWASection').style.display = 'none';
+  }
+  deferredInstallPrompt = null;
+});
+
+window.addEventListener('appinstalled', ()=>{
+  toast('🎉 تم تثبيت زاد القلوب');
+  deferredInstallPrompt = null;
+  const sec = $('#installPWASection');
+  if(sec) sec.style.display = 'none';
+});
+
+/* تفعيل Firebase Offline Sync — التعليقات والنتائج تتزامن لما النت يرجع */
+if(db){
+  try{
+    db.ref('leaderboard').keepSynced(true);
+    db.ref('comments').keepSynced(true);
+    console.log('✅ Firebase offline sync enabled');
+  }catch(e){ console.warn('Firebase sync failed:', e); }
+}
+/* ============================================================
+   Admin Panel
+   ============================================================ */
+const ADMIN_PASSWORD = 'zad2026admin'; // ← غيّرها لكلمة سر قوية
+const ADMIN_SESSION_KEY = 'zq_admin_session';
+let currentAdminTab = 'notifications';
+
+function isAdminLoggedIn(){
+  const sess = LS.get(ADMIN_SESSION_KEY, null);
+  if(!sess) return false;
+  /* الجلسة صالحة 24 ساعة */
+  if(Date.now() - sess > 24*60*60*1000){
+    LS.set(ADMIN_SESSION_KEY, null);
+    return false;
+  }
+  return true;
+}
+
+function openAdmin(){
+  go('admin');
+  if(isAdminLoggedIn()){
+    $('#adminLogin').style.display = 'none';
+    $('#adminPanel').style.display = 'block';
+    renderAdmin();
+  } else {
+    $('#adminLogin').style.display = 'block';
+    $('#adminPanel').style.display = 'none';
+    setTimeout(()=> $('#adminPassInput')?.focus(), 200);
+  }
+}
+
+function adminLogout(){
+  LS.set(ADMIN_SESSION_KEY, null);
+  toast('🚪 تم تسجيل الخروج');
+  go('home');
+}
+
+window.adminLogout = adminLogout;
+
+$('#adminLoginBtn').onclick = ()=>{
+  const pass = $('#adminPassInput').value;
+  if(pass === ADMIN_PASSWORD){
+    LS.set(ADMIN_SESSION_KEY, Date.now());
+    sndOk();
+    toast('✅ مرحباً بك في لوحة التحكم');
+    openAdmin();
+  } else {
+    sndBad();
+    toast('❌ كلمة السر خطأ');
+    $('#adminPassInput').value = '';
+    $('#adminPassInput').focus();
+  }
+};
+
+$('#adminPassInput')?.addEventListener('keydown', e=>{
+  if(e.key === 'Enter') $('#adminLoginBtn').click();
+});
+
+/* فتح Admin من الرابط #admin أو اختصار Ctrl+Shift+A */
+function checkAdminAccess(){
+  if(location.hash === '#admin'){
+    setTimeout(()=> openAdmin(), 500);
+  }
+}
+window.addEventListener('hashchange', checkAdminAccess);
+document.addEventListener('keydown', e=>{
+  if(e.ctrlKey && e.shiftKey && e.key === 'A'){
+    e.preventDefault();
+    openAdmin();
+  }
+});
+
+/* تبويبات Admin */
+function renderAdminTabs(){
+  const tabs = $('#adminTabs'); if(!tabs) return;
+  const items = [
+    { id:'notifications', label:'🔔 الإشعارات' },
+    { id:'comments', label:'💬 التعليقات' },
+    { id:'leaderboard', label:'🏆 لوحة الصدارة' }
+  ];
+  tabs.innerHTML = items.map(t=>`
+    <button class="cat-btn ${t.id === currentAdminTab ? 'active' : ''}" data-tab="${t.id}">${t.label}</button>
+  `).join('');
+  tabs.querySelectorAll('.cat-btn').forEach(b=>{
+    b.onclick = ()=>{ sndClick(); currentAdminTab = b.dataset.tab; renderAdminTabs(); renderAdminContent(); };
+  });
+}
+
+function renderAdmin(){
+  renderAdminTabs();
+  renderAdminStats();
+  renderAdminContent();
+}
+
+function renderAdminStats(){
+  const stats = $('#adminStats'); if(!stats) return;
+  stats.innerHTML = `
+    <div class="admin-stat"><b id="statNotif">—</b><span>إشعار</span></div>
+    <div class="admin-stat"><b id="statComments">—</b><span>تعليق</span></div>
+    <div class="admin-stat"><b id="statScores">—</b><span>نتيجة</span></div>
+  `;
+  if(!db) return;
+  db.ref('notifications').once('value', s=>{ $('#statNotif').textContent = toAr(Object.keys(s.val()||{}).length); });
+  db.ref('comments').once('value', s=>{
+    let total = 0;
+    Object.values(s.val()||{}).forEach(item=> total += Object.keys(item||{}).length);
+    $('#statComments').textContent = toAr(total);
+  });
+  db.ref('leaderboard').once('value', s=>{ $('#statScores').textContent = toAr(Object.keys(s.val()||{}).length); });
+}
+
+function renderAdminContent(){
+  const box = $('#adminContent'); if(!box) return;
+  if(!db){
+    box.innerHTML = '<div class="empty">⚠️ Firebase غير متصل</div>';
+    return;
+  }
+  if(currentAdminTab === 'notifications') renderAdminNotifications();
+  else if(currentAdminTab === 'comments') renderAdminComments();
+  else if(currentAdminTab === 'leaderboard') renderAdminLeaderboard();
+}
+
+/* ===== إدارة الإشعارات ===== */
+function renderAdminNotifications(){
+  const box = $('#adminContent'); if(!box) return;
+  box.innerHTML = `
+    <div class="admin-card">
+      <h4>➕ إضافة إشعار جديد</h4>
+      <div class="admin-form">
+        <input id="anIcon" placeholder="الأيقونة (مثال: 🎉 أو 📢)" value="🔔" maxlength="4">
+        <input id="anTitle" placeholder="العنوان" maxlength="60">
+        <textarea id="anBody" placeholder="نص الإشعار…" maxlength="200"></textarea>
+        <button class="btn btn-gold" id="anAdd" style="width:100%">📤 إرسال الإشعار للجميع</button>
+      </div>
+    </div>
+    <div class="admin-card">
+      <h4>📋 الإشعارات الحالية</h4>
+      <div id="anList"><div class="empty">جاري التحميل…</div></div>
+    </div>
+  `;
+  $('#anAdd').onclick = ()=>{
+    const icon = $('#anIcon').value.trim() || '🔔';
+    const title = $('#anTitle').value.trim();
+    const body = $('#anBody').value.trim();
+    if(!title || !body){ toast('⚠️ املأ العنوان والنص'); return; }
+    db.ref('notifications').push({
+      icon, title, body,
+      timestamp: Date.now(),
+      date: new Date().toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'})
+    }).then(()=>{
+      sndOk();
+      toast('✅ تم إرسال الإشعار');
+      $('#anTitle').value = ''; $('#anBody').value = '';
+      renderAdminNotifications();
+      if(typeof loadNotifications === 'function') loadNotifications();
+    }).catch(e=>{ toast('⚠️ فشل الإرسال'); console.warn(e); });
+  };
+  db.ref('notifications').orderByChild('timestamp').limitToLast(50).once('value', snap=>{
+    const data = snap.val();
+    const arr = data ? Object.entries(data).map(([k,v])=>({key:k,...v})).sort((a,b)=> (b.timestamp||0)-(a.timestamp||0)) : [];
+    const list = $('#anList');
+    if(!list) return;
+    if(!arr.length){ list.innerHTML = '<div class="empty">لا توجد إشعارات</div>'; return; }
+    list.innerHTML = arr.map(n=>`
+      <div class="admin-item">
+        <div class="notif-icon">${escapeHtml(n.icon||'🔔')}</div>
+        <div class="ai-content">
+          <div class="ai-title">${escapeHtml(n.title||'')}</div>
+          <div>${escapeHtml(n.body||'')}</div>
+          <div class="ai-meta">${escapeHtml(n.date||'')}</div>
+        </div>
+        <button class="admin-del" data-key="${n.key}" data-type="notif">🗑️</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('.admin-del').forEach(b=>{
+      b.onclick = ()=>{
+        if(!confirm('حذف الإشعار؟')) return;
+        db.ref('notifications/' + b.dataset.key).remove().then(()=>{
+          toast('🗑️ تم الحذف'); renderAdminNotifications();
+          if(typeof loadNotifications === 'function') loadNotifications();
+        });
+      };
+    });
+  });
+}
+
+/* ===== إدارة التعليقات ===== */
+function renderAdminComments(){
+  const box = $('#adminContent'); if(!box) return;
+  box.innerHTML = '<div class="admin-card"><h4>💬 كل التعليقات</h4><div id="cmList"><div class="empty">جاري التحميل…</div></div></div>';
+  db.ref('comments').once('value', snap=>{
+    const data = snap.val() || {};
+    const all = [];
+    Object.entries(data).forEach(([itemId, comments])=>{
+      Object.entries(comments||{}).forEach(([cid, c])=>{
+        all.push({itemId, cid, ...c});
+      });
+    });
+    all.sort((a,b)=> (b.timestamp||0)-(a.timestamp||0));
+    const list = $('#cmList');
+    if(!all.length){ list.innerHTML = '<div class="empty">لا توجد تعليقات</div>'; return; }
+    list.innerHTML = all.slice(0,200).map(c=>{
+      const item = getItem(c.itemId);
+      const itemTitle = item ? item.title : c.itemId;
+      return `
+        <div class="admin-item">
+          <div class="ai-content">
+            <div class="ai-title">${escapeHtml(c.name||'زائر')} <span style="font-size:11px;color:var(--muted);font-weight:600">على: ${escapeHtml(itemTitle)}</span></div>
+            <div>${escapeHtml(c.text||'')}</div>
+            <div class="ai-meta">${escapeHtml(c.date||'')}</div>
+          </div>
+          <button class="admin-del" data-item="${c.itemId}" data-cid="${c.cid}">🗑️</button>
+        </div>
+      `;
+    }).join('');
+    list.querySelectorAll('.admin-del').forEach(b=>{
+      b.onclick = ()=>{
+        if(!confirm('حذف التعليق؟')) return;
+        db.ref('comments/' + b.dataset.item + '/' + b.dataset.cid).remove().then(()=>{
+          toast('🗑️ تم الحذف'); renderAdminComments(); renderAdminStats();
+        });
+      };
+    });
+  });
+}
+
+/* ===== إدارة لوحة الصدارة ===== */
+function renderAdminLeaderboard(){
+  const box = $('#adminContent'); if(!box) return;
+  box.innerHTML = `
+    <div class="admin-card">
+      <h4>🏆 لوحة الصدارة</h4>
+      <button class="btn btn-sm btn-ghost" id="clearAllScores" style="width:100%;margin-bottom:12px;color:#ef4444;border-color:rgba(239,68,68,.4)">🗑️ حذف كل النتايج</button>
+      <div id="lbList"><div class="empty">جاري التحميل…</div></div>
+    </div>
+  `;
+  $('#clearAllScores').onclick = ()=>{
+    if(!confirm('⚠️ حذف كل نتائج لوحة الصدارة؟ لا يمكن التراجع!')) return;
+    db.ref('leaderboard').remove().then(()=>{
+      toast('🗑️ تم حذف كل النتايج'); renderAdminLeaderboard(); renderAdminStats();
+    });
+  };
+  db.ref('leaderboard').orderByChild('pct').limitToLast(100).once('value', snap=>{
+    const data = snap.val();
+    const arr = data ? Object.entries(data).map(([k,v])=>({key:k,...v})).sort((a,b)=> (b.pct||0)-(a.pct||0)) : [];
+    const list = $('#lbList');
+    if(!list) return;
+    if(!arr.length){ list.innerHTML = '<div class="empty">لا توجد نتائج</div>'; return; }
+    list.innerHTML = arr.map((r,i)=>`
+      <div class="admin-item">
+        <div class="ai-content">
+          <div class="ai-title">${toAr(i+1)}. ${escapeHtml(r.name||'')} <span style="color:var(--ok)">${toAr(r.pct)}%</span></div>
+          <div class="ai-meta">${escapeHtml(r.level||'')} · ${toAr(r.pts)} نقطة · ${escapeHtml(r.date||'')}</div>
+        </div>
+        <button class="admin-del" data-key="${r.key}">🗑️</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('.admin-del').forEach(b=>{
+      b.onclick = ()=>{
+        if(!confirm('حذف النتيجة؟')) return;
+        db.ref('leaderboard/' + b.dataset.key).remove().then(()=>{
+          toast('🗑️ تم الحذف'); renderAdminLeaderboard(); renderAdminStats();
+        });
+      };
+    });
+  });
+}
+
+/* تشغيل Admin access عند البدء */
+setTimeout(checkAdminAccess, 800);
 })();
 </script>
 </body>
