@@ -1082,6 +1082,47 @@ html[data-theme="light"] .admin-stat b{color:var(--gold-3)}
   cursor:pointer;transition:.25s;
 }
 .admin-logout:hover{background:rgba(239,68,68,.3)}
+/* ===== اختيار القارئ ===== */
+.reciter-bar{
+  display:flex;align-items:center;gap:10px;margin-bottom:16px;
+  padding:12px 16px;border-radius:14px;
+  background:rgba(0,0,0,.3);border:1px solid var(--card-brd);
+  flex-wrap:wrap;
+}
+html[data-theme="light"] .reciter-bar{background:rgba(255,255,255,.7)}
+.reciter-bar label{
+  font-size:13px;font-weight:800;color:var(--gold-2);
+  display:flex;align-items:center;gap:6px;flex-shrink:0;
+}
+html[data-theme="light"] .reciter-bar label{color:var(--gold-3)}
+.reciter-select{
+  flex:1;min-width:180px;padding:10px 14px;border-radius:10px;
+  background:rgba(0,0,0,.4);border:1.5px solid rgba(212,175,55,.3);
+  color:var(--txt);font-family:'Cairo';font-size:14px;font-weight:700;
+  outline:none;cursor:pointer;transition:.3s;
+}
+html[data-theme="light"] .reciter-select{background:rgba(255,255,255,.85)}
+.reciter-select:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 4px rgba(212,175,55,.14);
+}
+.reciter-select option{
+  background:#0b4a38;color:#eef6f2;font-weight:700;padding:8px;
+}
+html[data-theme="light"] .reciter-select option{background:#fff;color:#1a2620}
+
+.reciter-badge{
+  font-size:11px;color:var(--muted);font-weight:700;
+  padding:4px 10px;border-radius:99px;
+  background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);
+  white-space:nowrap;
+}
+
+@media(max-width:820px){
+  .reciter-bar{padding:10px 12px}
+  .reciter-select{font-size:13px;padding:9px 12px}
+  .reciter-bar label{font-size:12px}
+}
 </style>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1414,6 +1455,11 @@ html[data-theme="light"] .admin-stat b{color:var(--gold-3)}
     <button class="sr-close" onclick="closeSurahReader()">✕</button>
     <h2 id="srTitle">—</h2>
     <div class="sr-sub" id="srSub">—</div>
+    <div class="reciter-bar">
+      <label>🎙️ القارئ:</label>
+      <select class="reciter-select" id="reciterSelect"></select>
+      <span class="reciter-badge" id="reciterBadge">—</span>
+    </div>
     <div class="sr-audio" id="srAudioBox"></div>
     <div class="sr-bismillah" id="srBismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
     <div class="sr-text" id="srText">جاري التحميل…</div>
@@ -4110,9 +4156,42 @@ function showCertVerifyModal(name, lvl, pct, date){
 
 /* ============ 1. القرآن الكريم ============ */
 const QURAN_API = 'https://api.alquran.cloud/v1';
-const QURAN_CDN = 'https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy';
-let surahListCache = null;
-let currentSurahNum = 1;
+/* ============ قائمة القراء الـ 30 ============ */
+const RECITERS = [
+  { id:'ar.alafasy',          name:'مشاري العفاسي',           server:'https://server8.mp3quran.net/afs/',   code:'afs' },
+  { id:'ar.abdulbasitmurattal2', name:'عبد الباسط (مرتل)',     server:'https://server7.mp3quran.net/basit/', code:'basit' },
+  { id:'ar.husary',           name:'محمود خليل الحصري',       server:'https://server13.mp3quran.net/husr/',  code:'husr' },
+  { id:'ar.minshawi',         name:'محمد صديق المنشاوي',      server:'https://server10.mp3quran.net/minsh/', code:'minsh' },
+  { id:'ar.mahermuaiqly',     name:'ماهر المعيقلي',           server:'https://server12.mp3quran.net/maher/', code:'maher' },
+  { id:'ar.saoodshuraym',     name:'سعود الشريم',             server:'https://server7.mp3quran.net/shur/',   code:'shur' },
+  { id:'ar.abdurrahmaansudais', name:'عبد الرحمن السديس',     server:'https://server11.mp3quran.net/sds/',   code:'sds' },
+  { id:'ar.saadalghamdi',     name:'سعد الغامدي',             server:'https://server7.mp3quran.net/s_gmd/',  code:'s_gmd' },
+  { id:'ar.ahmedajamy',       name:'أحمد العجمي',             server:'https://server10.mp3quran.net/ajm/',   code:'ajm' },
+  { id:'ar.yasseraldossari',  name:'ياسر الدوسري',            server:'https://server11.mp3quran.net/yasser/', code:'yasser' },
+  { id:'ar.abdullahbasfar',   name:'عبد الله بصفر',           server:'https://server6.mp3quran.net/bsfr/',   code:'bsfr' },
+  { id:'ar.muhammadayyoub',   name:'محمد أيوب',               server:'https://server8.mp3quran.net/ayyub/',  code:'ayyub' },
+  { id:'ar.muhammadjibreel',  name:'محمد جبريل',              server:'https://server8.mp3quran.net/jbr/',    code:'jbr' },
+  { id:'ar.alihudhaify',      name:'علي الحذيفي',             server:'https://server9.mp3quran.net/hthfi/',  code:'hthfi' },
+  { id:'ar.abdulbasitmurattal', name:'عبد الباسط (مرتل)',     server:'https://server7.mp3quran.net/basit/', code:'basit' },
+  { id:'ar.mahmoudalibanna',  name:'محمود علي البنا',         server:'https://server8.mp3quran.net/bna/',    code:'bna' },
+  { id:'ar.muhammadabdulkarim', name:'محمد عبد الكريم',       server:'https://server12.mp3quran.net/m_krm/', code:'m_krm' },
+  { id:'ar.abdullahawadaljuhani', name:'عبد الله عواد الجهني', server:'https://server13.mp3quran.net/jhn/',  code:'jhn' },
+  { id:'ar.khaledaljalil',    name:'خالد الجليل',             server:'https://server10.mp3quran.net/jleel/', code:'jleel' },
+  { id:'ar.nasserqatami',     name:'ناصر القطامي',            server:'https://server8.mp3quran.net/qtm/',    code:'qtm' },
+  { id:'ar.fahadalqandari',   name:'فهد الكندري',             server:'https://server6.mp3quran.net/fahad/',  code:'fahad' },
+  { id:'ar.bandarbalila',     name:'بندر بليلة',              server:'https://server6.mp3quran.net/balilah/', code:'balilah' },
+  { id:'ar.raadalkurdi',      name:'رعد محمد الكردي',         server:'https://server6.mp3quran.net/raad/',   code:'raad' },
+  { id:'ar.abdulwalialarkani', name:'عبد الولي الأركاني',     server:'https://server6.mp3quran.net/arkani/', code:'arkani' },
+  { id:'ar.muhammadaltablaway', name:'محمد الطبلاوي',         server:'https://server8.mp3quran.net/tblawi/', code:'tblawi' },
+  { id:'ar.mustafaismail',    name:'مصطفى إسماعيل',           server:'https://server8.mp3quran.net/ismail/', code:'ismail' },
+  { id:'ar.mahmoudalshimi',   name:'محمود الشيمي',            server:'https://server10.mp3quran.net/shimi/', code:'shimi' },
+  { id:'ar.ahmednaina',       name:'أحمد نعينع',              server:'https://server12.mp3quran.net/naina/', code:'naina' },
+  { id:'ar.abdurrahmanshahat', name:'عبد الرحمن الشحات',      server:'https://server6.mp3quran.net/shahat/', code:'shahat' },
+  { id:'ar.ibrahimalkhader',  name:'إبراهيم الأخضر',          server:'https://server6.mp3quran.net/akdr/',   code:'akdr' }
+];
+
+/* القارئ المختار حالياً */
+let currentReciterId = LS.get('zq_reciter', 'ar.alafasy');
 
 async function loadSurahList(){
   if(surahListCache) return surahListCache;
@@ -4195,7 +4274,28 @@ async function openSurahReader(num){
   $('#srText').textContent = 'جاري التحميل…';
   $('#srAudioBox').innerHTML = '';
 
-  // حفظ آخر قراءة
+  /* تعبئة قائمة القراء */
+  const select = $('#reciterSelect');
+  if(select && !select._filled){
+    select._filled = true;
+    select.innerHTML = RECITERS.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+    select.value = currentReciterId;
+    select.onchange = ()=>{
+      currentReciterId = select.value;
+      LS.set('zq_reciter', currentReciterId);
+      const rec = RECITERS.find(x=>x.id === currentReciterId);
+      if(rec){
+        $('#reciterBadge').textContent = '🎙️ ' + rec.name;
+        loadSurahAudio(currentSurahNum, rec);
+        toast('🎙️ تم تغيير القارئ إلى ' + rec.name);
+        sndOk();
+      }
+    };
+  } else if(select){
+    select.value = currentReciterId;
+  }
+
+  /* حفظ آخر قراءة */
   LS.set('zq_last_surah', num);
   const lastEl = $('#quranLastRead');
   if(lastEl && surahListCache){
@@ -4204,7 +4304,6 @@ async function openSurahReader(num){
   }
 
   try{
-    // معلومات السورة
     const list = await loadSurahList();
     const info = list ? list.find(s=>s.number === num) : null;
     if(info){
@@ -4214,16 +4313,13 @@ async function openSurahReader(num){
       $('#srTitle').textContent = 'سورة رقم ' + toAr(num);
     }
 
-    // نص السورة
     const r = await fetch(QURAN_API + '/surah/' + num);
     const j = await r.json();
     const ayahs = j.data.ayahs;
 
-    // هل السورة تبدأ بالبسملة؟ (كل السور ما عدا التوبة)
     const showBismillah = num !== 9 && num !== 1;
     $('#srBismillah').style.display = showBismillah ? 'block' : 'none';
 
-    // لو الفاتحة، الآية الأولى هي البسملة نفسها
     let textHtml = '';
     ayahs.forEach(a=>{
       const clean = a.text.replace(/^بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\s*/, '');
@@ -4233,9 +4329,10 @@ async function openSurahReader(num){
     });
     $('#srText').innerHTML = textHtml;
 
-        // الصوت — بدون أصفار (الـ CDN مش بيقبل padStart)
-    const audioUrl = `${QURAN_CDN}/${num}.mp3`;
-    $('#srAudioBox').innerHTML = `<audio controls preload="none"><source src="${audioUrl}" type="audio/mpeg">متصفحك لا يدعم الصوت</audio>`;
+    /* تحميل الصوت حسب القارئ المختار */
+    const rec = RECITERS.find(x=>x.id === currentReciterId) || RECITERS[0];
+    $('#reciterBadge').textContent = '🎙️ ' + rec.name;
+    loadSurahAudio(num, rec);
 
   }catch(e){
     console.error(e);
@@ -4243,11 +4340,27 @@ async function openSurahReader(num){
   }
 }
 
+/* تحميل صوت السورة حسب القارئ */
+function loadSurahAudio(num, reciter){
+  const surahNum3 = String(num).padStart(3, '0');
+  const audioUrl = `${reciter.server}${surahNum3}.mp3`;
+  $('#srAudioBox').innerHTML = `
+    <audio controls preload="metadata" style="width:100%">
+      <source src="${audioUrl}" type="audio/mpeg">
+      متصفحك لا يدعم الصوت
+    </audio>
+  `;
+  const audio = $('#srAudioBox audio');
+  if(audio){
+    audio.onerror = ()=>{
+      toast('⚠️ تعذّر تحميل الصوت، جرب قارئاً آخر');
+    };
+  }
+}
 function closeSurahReader(){
   const reader = $('#surahReader'); if(!reader) return;
   reader.classList.remove('show');
   document.body.style.overflow = '';
-  // إيقاف الصوت
   const audio = reader.querySelector('audio');
   if(audio) audio.pause();
 }
