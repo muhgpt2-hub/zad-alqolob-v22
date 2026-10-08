@@ -1339,7 +1339,7 @@ html[data-theme="light"] .ramadan-card h4{color:var(--gold-3)}
 </footer>
 
 <script>
-  /* ============ Firebase Setup ============ */
+/* ============ Firebase Setup ============ */
 const firebaseConfig = {
   apiKey: "AIzaSyAGGIYCotazh7nKTFjPX1FsbPRkk8sZcuE",
   authDomain: "zad-alqolob.firebaseapp.com",
@@ -1353,8 +1353,9 @@ let db = null;
 try{
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
+  console.log('✅ Firebase initialized');
 }catch(e){
-  console.warn('Firebase init failed:', e);
+  console.warn('❌ Firebase init failed:', e);
 }
 /* =========================================================
    زاد القلوب — v3
