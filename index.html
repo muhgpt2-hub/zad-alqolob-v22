@@ -4196,45 +4196,76 @@ let currentReciterId = LS.get('zq_reciter', 'ar.alafasy');
 async function loadSurahList(){
   if(surahListCache) return surahListCache;
 
-  /* نجرّب المصدر الأول (alquran.cloud) */
-  try{
-    const controller = new AbortController();
-    const timeout = setTimeout(()=> controller.abort(), 8000);
-    const r = await fetch(QURAN_API + '/surah', { signal: controller.signal });
-    clearTimeout(timeout);
-    const j = await r.json();
-    if(j && j.data){
-      surahListCache = j.data;
-      console.log('✅ Surah list loaded from alquran.cloud');
-      return surahListCache;
-    }
-  }catch(e){
-    console.warn('⚠️ alquran.cloud failed, trying quran.com…', e);
-  }
+  /* القائمة الثابتة للسور — محفوظة في الكود مباشرة */
+  const STATIC_SURAHS = [
+    {n:1,name:'الفاتحة',a:7,t:'مكية'},{n:2,name:'البقرة',a:286,t:'مدنية'},
+    {n:3,name:'آل عمران',a:200,t:'مدنية'},{n:4,name:'النساء',a:176,t:'مدنية'},
+    {n:5,name:'المائدة',a:120,t:'مدنية'},{n:6,name:'الأنعام',a:165,t:'مكية'},
+    {n:7,name:'الأعراف',a:206,t:'مكية'},{n:8,name:'الأنفال',a:75,t:'مدنية'},
+    {n:9,name:'التوبة',a:129,t:'مدنية'},{n:10,name:'يونس',a:109,t:'مكية'},
+    {n:11,name:'هود',a:123,t:'مكية'},{n:12,name:'يوسف',a:111,t:'مكية'},
+    {n:13,name:'الرعد',a:43,t:'مدنية'},{n:14,name:'إبراهيم',a:52,t:'مكية'},
+    {n:15,name:'الحجر',a:99,t:'مكية'},{n:16,name:'النحل',a:128,t:'مكية'},
+    {n:17,name:'الإسراء',a:111,t:'مكية'},{n:18,name:'الكهف',a:110,t:'مكية'},
+    {n:19,name:'مريم',a:98,t:'مكية'},{n:20,name:'طه',a:135,t:'مكية'},
+    {n:21,name:'الأنبياء',a:112,t:'مكية'},{n:22,name:'الحج',a:78,t:'مدنية'},
+    {n:23,name:'المؤمنون',a:118,t:'مكية'},{n:24,name:'النور',a:64,t:'مدنية'},
+    {n:25,name:'الفرقان',a:77,t:'مكية'},{n:26,name:'الشعراء',a:227,t:'مكية'},
+    {n:27,name:'النمل',a:93,t:'مكية'},{n:28,name:'القصص',a:88,t:'مكية'},
+    {n:29,name:'العنكبوت',a:69,t:'مكية'},{n:30,name:'الروم',a:60,t:'مكية'},
+    {n:31,name:'لقمان',a:34,t:'مكية'},{n:32,name:'السجدة',a:30,t:'مكية'},
+    {n:33,name:'الأحزاب',a:73,t:'مدنية'},{n:34,name:'سبأ',a:54,t:'مكية'},
+    {n:35,name:'فاطر',a:45,t:'مكية'},{n:36,name:'يس',a:83,t:'مكية'},
+    {n:37,name:'الصافات',a:182,t:'مكية'},{n:38,name:'ص',a:88,t:'مكية'},
+    {n:39,name:'الزمر',a:75,t:'مكية'},{n:40,name:'غافر',a:85,t:'مكية'},
+    {n:41,name:'فصلت',a:54,t:'مكية'},{n:42,name:'الشورى',a:53,t:'مكية'},
+    {n:43,name:'الزخرف',a:89,t:'مكية'},{n:44,name:'الدخان',a:59,t:'مكية'},
+    {n:45,name:'الجاثية',a:37,t:'مكية'},{n:46,name:'الأحقاف',a:35,t:'مكية'},
+    {n:47,name:'محمد',a:38,t:'مدنية'},{n:48,name:'الفتح',a:29,t:'مدنية'},
+    {n:49,name:'الحجرات',a:18,t:'مدنية'},{n:50,name:'ق',a:45,t:'مكية'},
+    {n:51,name:'الذاريات',a:60,t:'مكية'},{n:52,name:'الطور',a:49,t:'مكية'},
+    {n:53,name:'النجم',a:62,t:'مكية'},{n:54,name:'القمر',a:55,t:'مكية'},
+    {n:55,name:'الرحمن',a:78,t:'مدنية'},{n:56,name:'الواقعة',a:96,t:'مكية'},
+    {n:57,name:'الحديد',a:29,t:'مدنية'},{n:58,name:'المجادلة',a:22,t:'مدنية'},
+    {n:59,name:'الحشر',a:24,t:'مدنية'},{n:60,name:'الممتحنة',a:13,t:'مدنية'},
+    {n:61,name:'الصف',a:14,t:'مدنية'},{n:62,name:'الجمعة',a:11,t:'مدنية'},
+    {n:63,name:'المنافقون',a:11,t:'مدنية'},{n:64,name:'التغابن',a:18,t:'مدنية'},
+    {n:65,name:'الطلاق',a:12,t:'مدنية'},{n:66,name:'التحريم',a:12,t:'مدنية'},
+    {n:67,name:'الملك',a:30,t:'مكية'},{n:68,name:'القلم',a:52,t:'مكية'},
+    {n:69,name:'الحاقة',a:52,t:'مكية'},{n:70,name:'المعارج',a:44,t:'مكية'},
+    {n:71,name:'نوح',a:28,t:'مكية'},{n:72,name:'الجن',a:28,t:'مكية'},
+    {n:73,name:'المزمل',a:20,t:'مكية'},{n:74,name:'المدثر',a:56,t:'مكية'},
+    {n:75,name:'القيامة',a:40,t:'مكية'},{n:76,name:'الإنسان',a:31,t:'مدنية'},
+    {n:77,name:'المرسلات',a:50,t:'مكية'},{n:78,name:'النبأ',a:40,t:'مكية'},
+    {n:79,name:'النازعات',a:46,t:'مكية'},{n:80,name:'عبس',a:42,t:'مكية'},
+    {n:81,name:'التكوير',a:29,t:'مكية'},{n:82,name:'الانفطار',a:19,t:'مكية'},
+    {n:83,name:'المطففين',a:36,t:'مكية'},{n:84,name:'الانشقاق',a:25,t:'مكية'},
+    {n:85,name:'البروج',a:22,t:'مكية'},{n:86,name:'الطارق',a:17,t:'مكية'},
+    {n:87,name:'الأعلى',a:19,t:'مكية'},{n:88,name:'الغاشية',a:26,t:'مكية'},
+    {n:89,name:'الفجر',a:30,t:'مكية'},{n:90,name:'البلد',a:20,t:'مكية'},
+    {n:91,name:'الشمس',a:15,t:'مكية'},{n:92,name:'الليل',a:21,t:'مكية'},
+    {n:93,name:'الضحى',a:11,t:'مكية'},{n:94,name:'الشرح',a:8,t:'مكية'},
+    {n:95,name:'التين',a:8,t:'مكية'},{n:96,name:'العلق',a:19,t:'مكية'},
+    {n:97,name:'القدر',a:5,t:'مكية'},{n:98,name:'البينة',a:8,t:'مدنية'},
+    {n:99,name:'الزلزلة',a:8,t:'مدنية'},{n:100,name:'العاديات',a:11,t:'مكية'},
+    {n:101,name:'القارعة',a:11,t:'مكية'},{n:102,name:'التكاثر',a:8,t:'مكية'},
+    {n:103,name:'العصر',a:3,t:'مكية'},{n:104,name:'الهمزة',a:9,t:'مكية'},
+    {n:105,name:'الفيل',a:5,t:'مكية'},{n:106,name:'قريش',a:4,t:'مكية'},
+    {n:107,name:'الماعون',a:7,t:'مكية'},{n:108,name:'الكوثر',a:3,t:'مكية'},
+    {n:109,name:'الكافرون',a:6,t:'مكية'},{n:110,name:'النصر',a:3,t:'مدنية'},
+    {n:111,name:'المسد',a:5,t:'مكية'},{n:112,name:'الإخلاص',a:4,t:'مكية'},
+    {n:113,name:'الفلق',a:5,t:'مكية'},{n:114,name:'الناس',a:6,t:'مكية'}
+  ];
 
-  /* نجرب المصدر الاحتياطي (quran.com) */
-  try{
-    const controller = new AbortController();
-    const timeout = setTimeout(()=> controller.abort(), 8000);
-    const r = await fetch('https://api.quran.com/api/v4/chapters?language=ar', { signal: controller.signal });
-    clearTimeout(timeout);
-    const j = await r.json();
-    if(j && j.chapters){
-      surahListCache = j.chapters.map(c=>({
-        number: c.id,
-        name: 'سُورَةُ ' + c.name_arabic,
-        englishName: c.name_simple,
-        numberOfAyahs: c.verses_count,
-        revelationType: c.revelation_place === 'makkah' ? 'Meccan' : 'Medinan'
-      }));
-      console.log('✅ Surah list loaded from quran.com');
-      return surahListCache;
-    }
-  }catch(e){
-    console.warn('⚠️ quran.com also failed', e);
-  }
-
-  return null;
+  surahListCache = STATIC_SURAHS.map(s=>({
+    number: s.n,
+    name: 'سُورَةُ ' + s.name,
+    englishName: s.name,
+    numberOfAyahs: s.a,
+    revelationType: s.t === 'مكية' ? 'Meccan' : 'Medinan'
+  }));
+  console.log('✅ Surah list loaded from static data (114 surahs)');
+  return surahListCache;
 }
 async function renderSurahGrid(){
   const grid = $('#surahGrid'); if(!grid) return;
