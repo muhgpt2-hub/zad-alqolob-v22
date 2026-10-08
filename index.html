@@ -4195,25 +4195,64 @@ let currentReciterId = LS.get('zq_reciter', 'ar.alafasy');
 
 async function loadSurahList(){
   if(surahListCache) return surahListCache;
-  try{
-    const r = await fetch(QURAN_API + '/surah');
-    const j = await r.json();
-    surahListCache = j.data;
-    return surahListCache;
-  }catch(e){
-    console.error(e);
-    return null;
-  }
-}
 
+  /* نجرّب المصدر الأول (alquran.cloud) */
+  try{
+    const controller = new AbortController();
+    const timeout = setTimeout(()=> controller.abort(), 8000);
+    const r = await fetch(QURAN_API + '/surah', { signal: controller.signal });
+    clearTimeout(timeout);
+    const j = await r.json();
+    if(j && j.data){
+      surahListCache = j.data;
+      console.log('✅ Surah list loaded from alquran.cloud');
+      return surahListCache;
+    }
+  }catch(e){
+    console.warn('⚠️ alquran.cloud failed, trying quran.com…', e);
+  }
+
+  /* نجرب المصدر الاحتياطي (quran.com) */
+  try{
+    const controller = new AbortController();
+    const timeout = setTimeout(()=> controller.abort(), 8000);
+    const r = await fetch('https://api.quran.com/api/v4/chapters?language=ar', { signal: controller.signal });
+    clearTimeout(timeout);
+    const j = await r.json();
+    if(j && j.chapters){
+      surahListCache = j.chapters.map(c=>({
+        number: c.id,
+        name: 'سُورَةُ ' + c.name_arabic,
+        englishName: c.name_simple,
+        numberOfAyahs: c.verses_count,
+        revelationType: c.revelation_place === 'makkah' ? 'Meccan' : 'Medinan'
+      }));
+      console.log('✅ Surah list loaded from quran.com');
+      return surahListCache;
+    }
+  }catch(e){
+    console.warn('⚠️ quran.com also failed', e);
+  }
+
+  return null;
+}
 async function renderSurahGrid(){
   const grid = $('#surahGrid'); if(!grid) return;
-  grid.innerHTML = '<div class="empty" style="grid-column:1/-1">جاري التحميل…</div>';
+  grid.innerHTML = '<div class="empty" style="grid-column:1/-1">⏳ جاري تحميل السور…</div>';
+
   const list = await loadSurahList();
-  if(!list){
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">⚠️ تعذّر تحميل السور، حاول مرة أخرى</div>';
+
+  if(!list || !list.length){
+    grid.innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        ⚠️ تعذّر تحميل السور<br>
+        <button class="btn btn-sm btn-gold" onclick="location.reload()" style="margin-top:14px">
+          🔄 إعادة المحاولة
+        </button>
+      </div>`;
     return;
   }
+
   const total = $('#quranTotal');
   if(total) total.textContent = toAr(list.length);
 
@@ -4233,7 +4272,6 @@ async function renderSurahGrid(){
   }
   paint(list);
 
-  // البحث
   const search = $('#quranSearch');
   if(search && !search._bound){
     search._bound = true;
@@ -4241,9 +4279,9 @@ async function renderSurahGrid(){
       const q = search.value.trim().toLowerCase();
       if(!q){ paint(list); return; }
       const filtered = list.filter(s=>
-        s.name.toLowerCase().includes(q) ||
+        (s.name && s.name.toLowerCase().includes(q)) ||
         String(s.number) === q ||
-        s.englishName.toLowerCase().includes(q)
+        (s.englishName && s.englishName.toLowerCase().includes(q))
       );
       if(!filtered.length){
         grid.innerHTML = '<div class="empty" style="grid-column:1/-1">لا توجد نتائج 🔍</div>';
@@ -4253,7 +4291,6 @@ async function renderSurahGrid(){
     };
   }
 
-  // آخر قراءة
   const lastRead = LS.get('zq_last_surah', null);
   const lastEl = $('#quranLastRead');
   if(lastEl && lastRead){
@@ -4261,7 +4298,6 @@ async function renderSurahGrid(){
     if(s) lastEl.textContent = s.name;
   }
 }
-
 async function openSurahReader(num){
   if(num < 1) num = 1;
   if(num > 114) num = 114;
